@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium SVG Interactive Visualizer</title>
+  <!-- Google Fonts Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --bg-card: rgba(17, 24, 39, 0.7);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --primary: #10b981;
+      --primary-hover: #34d399;
+      --danger: #f43f5e;
+      --danger-hover: #fda4af;
+      --text-muted: #9ca3af;
+      --text-main: #f3f4f6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    header {
+      padding: 20px 40px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(9, 13, 22, 0.8);
+      backdrop-filter: blur(12px);
+      z-index: 10;
+    }
+
+    header h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    header h1 span {
+      background: linear-gradient(135deg, var(--primary), #6ee7b7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .badge {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--primary);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 500;
+    }
+
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      height: calc(100vh - 73px);
+    }
+
+    /* SVG Viewport Styling */
+    .viewport-container {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      background-image: 
+        radial-gradient(circle at 50% 50%, rgba(17, 24, 39, 0.6) 0%, rgba(9, 13, 22, 1) 100%),
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 20px 20px, 20px 20px;
+      overflow: hidden;
+    }
+
+    .svg-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      max-width: 650px;
+      max-height: 650px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      background: rgba(15, 23, 42, 0.3);
+      backdrop-filter: blur(4px);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      padding: 20px;
+    }
+
+    .svg-wrapper svg {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+    }
+
+    /* Live hover/click interactivity */
+    .svg-wrapper svg path, 
+    .svg-wrapper svg polygon,
+    .svg-wrapper svg rect,
+    .svg-wrapper svg circle,
+    .svg-wrapper svg ellipse {
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .svg-wrapper svg path:hover,
+    .svg-wrapper svg polygon:hover,
+    .svg-wrapper svg rect:hover,
+    .svg-wrapper svg circle:hover,
+    .svg-wrapper svg ellipse:hover {
+      fill: var(--primary) !important;
+      stroke: var(--primary-hover) !important;
+      stroke-width: 3px !important;
+      filter: drop-shadow(0 0 12px rgba(16, 185, 129, 0.8)) !important;
+      opacity: 0.95;
+    }
+
+    .svg-wrapper svg .highlighted-path {
+      fill: var(--danger) !important;
+      stroke: var(--danger-hover) !important;
+      stroke-width: 3px !important;
+      filter: drop-shadow(0 0 12px rgba(244, 63, 94, 0.8)) !important;
+    }
+
+    /* Sidebar Styling */
+    .sidebar {
+      background: var(--bg-card);
+      border-left: 1px solid var(--border-color);
+      backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      overflow-y: auto;
+    }
+
+    .section-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card {
+      background: rgba(30, 41, 59, 0.4);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .instructions {
+      font-size: 0.875rem;
+      line-height: 1.5;
+      color: var(--text-muted);
+    }
+
+    .instructions ol {
+      margin-left: 20px;
+      margin-top: 8px;
+    }
+
+    .instructions li {
+      margin-bottom: 6px;
+    }
+
+    .inspector-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .inspector-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .inspector-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.125rem;
+      color: var(--primary);
+      background: rgba(16, 185, 129, 0.05);
+      border: 1px dashed rgba(16, 185, 129, 0.2);
+      padding: 8px 12px;
+      border-radius: 6px;
+      min-height: 45px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Selected Paths List */
+    .path-list-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 200px;
+    }
+
+    .path-list {
+      list-style: none;
+      overflow-y: auto;
+      flex: 1;
+      max-height: 350px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 4px;
+    }
+
+    .path-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin-bottom: 4px;
+      background: rgba(30, 41, 59, 0.3);
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.875rem;
+    }
+
+    .path-item:hover {
+      background: rgba(30, 41, 59, 0.6);
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .path-item.hidden-state {
+      opacity: 0.5;
+      text-decoration: line-through;
+    }
+
+    .path-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-icon {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .btn-icon:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+    }
+
+    .btn-icon.active-hide {
+      color: var(--danger);
+    }
+
+    .btn-icon.active-hide:hover {
+      background: rgba(244, 63, 94, 0.1);
+      color: #fda4af;
+    }
+
+    /* Main buttons */
+    .button-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      border-color: transparent;
+      color: #042f1a;
+      font-weight: 600;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-primary:disabled {
+      background: rgba(16, 185, 129, 0.3);
+      color: rgba(4, 47, 26, 0.5);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .btn-full {
+      grid-column: span 2;
+    }
+
+    /* Error Overlay */
+    .loading-overlay {
+      position: absolute;
+      inset: 0;
+      background: var(--bg-dark);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      z-index: 20;
+      transition: opacity 0.3s ease;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(16, 185, 129, 0.1);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s infinite linear;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    .error-msg {
+      color: var(--danger);
+      text-align: center;
+      max-width: 400px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #10b981;
+      color: #042f1a;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 100;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Portfolio SVG <span>Visualizer & Path Inspector</span></h1>
+    <div class="badge">Live SVG Fetching</div>
+  </header>
+
+  <main>
+    <!-- Left Viewport -->
+    <div class="viewport-container">
+      <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p style="color: var(--text-muted);" id="loadingText">Fetching public/webDeveloper.svg...</p>
+      </div>
+      
+      <div class="svg-wrapper" id="svgWrapper">
+        <!-- SVG will be injected here dynamically -->
+      </div>
+    </div>
+
+    <!-- Right Sidebar -->
+    <div class="sidebar">
+      <div class="section-title">Instructions</div>
+      <div class="card instructions">
+        <p>This utility enables precise path mapping for editing <strong>webDeveloper.svg</strong>.</p>
+        <ol>
+          <li>Hover over the SVG on the left to see Path IDs.</li>
+          <li>Click elements of the <strong>PHP button</strong> and its **connecting line**.</li>
+          <li>Click the **Eye Icon** (👁️‍🗨️) in the list to hide that path. Verify if the target part disappears!</li>
+          <li>Once all parts of the PHP button and line are identified and hidden, copy the IDs and send them to me.</li>
+        </ol>
+      </div>
+
+      <div class="inspector-panel">
+        <div class="section-title">Hovered Path ID</div>
+        <div class="inspector-value" id="hoveredId">Move mouse over SVG...</div>
+      </div>
+
+      <div class="path-list-container">
+        <div class="section-title">
+          Selected Paths
+          <span style="font-size: 0.75rem; text-transform: none; color: var(--primary);" id="selectedCount">0 selected</span>
+        </div>
+        <ul class="path-list" id="pathList">
+          <!-- Clicked paths will go here -->
+          <li style="color: var(--text-muted); text-align: center; padding: 20px; font-family: 'Inter', sans-serif; font-size: 0.875rem; list-style: none;" id="emptyListPlaceholder">
+            Click paths on the SVG to inspect and toggle visibility.
+          </li>
+        </ul>
+
+        <div class="button-group">
+          <button class="btn" id="btnShowAll" onclick="showAllPaths()">👁️ Show All</button>
+          <button class="btn" id="btnClear" onclick="clearSelected()">🗑️ Clear List</button>
+          <button class="btn btn-primary btn-full" id="btnCopy" onclick="copyIds()" disabled>
+            📋 Copy Selected IDs
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast">Copied IDs to Clipboard!</div>
+
+  <script>
+    const svgWrapper = document.getElementById('svgWrapper');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const loadingText = document.getElementById('loadingText');
+    const hoveredIdDisplay = document.getElementById('hoveredId');
+    const pathList = document.getElementById('pathList');
+    const emptyListPlaceholder = document.getElementById('emptyListPlaceholder');
+    const selectedCount = document.getElementById('selectedCount');
+    const btnCopy = document.getElementById('btnCopy');
+    const toast = document.getElementById('toast');
+
+    const clickedPaths = new Set();
+    const hiddenPaths = new Set();
+
+    // 1. Fetch SVG dynamically from public directory
+    fetch('/webDeveloper.svg')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to load webDeveloper.svg. Ensure next dev server is running and the file exists in the public directory.');
+        }
+        return response.text();
+      })
+      .then(svgText => {
+        // Clean up <?xml ... ?> and <!-- Generator ... --> to ensure direct DOM insertion doesn't break
+        const cleanSvg = svgText
+          .replace(/<\?xml[^>]*\?>/i, '')
+          .replace(/<!--[\s\S]*?-->/g, '')
+          .trim();
+
+        svgWrapper.innerHTML = cleanSvg;
+        
+        // Find the injected svg element
+        const svgElement = svgWrapper.querySelector('svg');
+        if (!svgElement) {
+          throw new Error('No SVG element found inside the fetched file.');
+        }
+        
+        // Strip hardcoded width/height to let wrapper handle sizing cleanly, but make sure aspect ratio is preserved
+        svgElement.removeAttribute('width');
+        svgElement.removeAttribute('height');
+        svgElement.style.width = '100%';
+        svgElement.style.height = '100%';
+
+        setupSvgListeners(svgElement);
+        
+        // Hide loading screen
+        loadingOverlay.style.opacity = 0;
+        setTimeout(() => loadingOverlay.style.display = 'none', 300);
+      })
+      .catch(error => {
+        console.error(error);
+        loadingOverlay.querySelector('.spinner').style.display = 'none';
+        loadingText.innerHTML = `
+          <div class="error-msg">
+            <strong>Error Loading SVG Visualizer</strong><br>
+            ${error.message}
+          </div>
+        `;
+      });
+
+    // 2. Setup interactivity listeners
+    function setupSvgListeners(svg) {
+      // SVG contains paths, polygons, rects, circles, ellipses
+      const targetTags = ['path', 'polygon', 'rect', 'circle', 'ellipse'];
+      
+      targetTags.forEach(tag => {
+        svg.querySelectorAll(tag).forEach(el => {
+          // Verify element has an ID
+          if (!el.id) {
+            // Assign dummy ID if missing
+            el.id = `element_${Math.random().toString(36).substr(2, 9)}`;
+          }
+
+          // Hover listeners
+          el.addEventListener('mouseenter', () => {
+            hoveredIdDisplay.textContent = el.id;
+          });
+
+          el.addEventListener('mouseleave', () => {
+            if (hoveredIdDisplay.textContent === el.id) {
+              hoveredIdDisplay.textContent = 'Move mouse over SVG...';
+            }
+          });
+
+          // Click listeners
+          el.addEventListener('click', (e) => {
+            e.stopPropagation();
+            addPathToList(el.id);
+          });
+        });
+      });
+    }
+
+    // 3. Add path to sidebar list
+    function addPathToList(id) {
+      if (clickedPaths.has(id)) {
+        // Highlight element visually in the list
+        const listItem = document.getElementById(`li_${id}`);
+        if (listItem) {
+          listItem.style.transform = 'scale(1.05)';
+          setTimeout(() => listItem.style.transform = 'scale(1)', 150);
+        }
+        return;
+      }
+
+      clickedPaths.add(id);
+      
+      // Remove placeholder if present
+      if (emptyListPlaceholder) {
+        emptyListPlaceholder.style.display = 'none';
+      }
+
+      const li = document.createElement('li');
+      li.className = 'path-item';
+      li.id = `li_${id}`;
+      
+      // Determine label
+      let label = id;
+      const el = document.getElementById(id);
+      if (el) {
+        label += ` (${el.tagName})`;
+      }
+
+      li.innerHTML = `
+        <span>${label}</span>
+        <div class="path-actions">
+          <button class="btn-icon" title="Toggle visibility (Hide/Show)" onclick="togglePathVisibility('${id}')">
+            <span id="eye_${id}">👁️</span>
+          </button>
+          <button class="btn-icon" title="Remove from list" onclick="removePathFromList('${id}')">
+            ❌
+          </button>
+        </div>
+      `;
+
+      pathList.appendChild(li);
+      updateStatus();
+    }
+
+    // 4. Toggle visibility of a specific path
+    function togglePathVisibility(id) {
+      const el = document.getElementById(id);
+      const li = document.getElementById(`li_${id}`);
+      const eyeIcon = document.getElementById(`eye_${id}`);
+
+      if (!el) return;
+
+      if (hiddenPaths.has(id)) {
+        // Show path
+        el.style.display = '';
+        el.classList.remove('highlighted-path');
+        hiddenPaths.delete(id);
+        if (li) li.classList.remove('hidden-state');
+        if (eyeIcon) eyeIcon.textContent = '👁️';
+        if (eyeIcon) eyeIcon.parentElement.classList.remove('active-hide');
+      } else {
+        // Hide path
+        el.style.display = 'none';
+        hiddenPaths.add(id);
+        if (li) li.classList.add('hidden-state');
+        if (eyeIcon) eyeIcon.textContent = '🙈';
+        if (eyeIcon) eyeIcon.parentElement.classList.add('active-hide');
+      }
+      
+      updateStatus();
+    }
+
+    // 5. Remove path from sidebar list
+    function removePathFromList(id) {
+      const el = document.getElementById(id);
+      const li = document.getElementById(`li_${id}`);
+
+      if (el) {
+        el.style.display = '';
+        el.classList.remove('highlighted-path');
+      }
+      
+      clickedPaths.delete(id);
+      hiddenPaths.delete(id);
+      
+      if (li) {
+        li.remove();
+      }
+
+      if (clickedPaths.size === 0) {
+        if (emptyListPlaceholder) {
+          emptyListPlaceholder.style.display = 'block';
+        }
+      }
+
+      updateStatus();
+    }
+
+    // 6. Update counts and copy button states
+    function updateStatus() {
+      const count = clickedPaths.size;
+      const hiddenCount = hiddenPaths.size;
+      
+      selectedCount.textContent = `${count} clicked, ${hiddenCount} hidden`;
+      btnCopy.disabled = count === 0;
+      
+      // Visually highlight clicked but not hidden paths on the SVG
+      clickedPaths.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          if (hiddenPaths.has(id)) {
+            el.classList.remove('highlighted-path');
+          } else {
+            el.classList.add('highlighted-path');
+          }
+        }
+      });
+    }
+
+    // 7. Clear all items
+    function clearSelected() {
+      // Restore all hidden elements
+      hiddenPaths.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = '';
+      });
+
+      // Remove highlight classes
+      clickedPaths.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('highlighted-path');
+      });
+
+      clickedPaths.clear();
+      hiddenPaths.clear();
+
+      // Clear HTML list except placeholder
+      pathList.innerHTML = '';
+      pathList.appendChild(emptyListPlaceholder);
+      emptyListPlaceholder.style.display = 'block';
+
+      updateStatus();
+    }
+
+    // 8. Show all hidden elements
+    function showAllPaths() {
+      hiddenPaths.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = '';
+        
+        const li = document.getElementById(`li_${id}`);
+        if (li) li.classList.remove('hidden-state');
+        
+        const eyeIcon = document.getElementById(`eye_${id}`);
+        if (eyeIcon) {
+          eyeIcon.textContent = '👁️';
+          eyeIcon.parentElement.classList.remove('active-hide');
+        }
+      });
+      hiddenPaths.clear();
+      updateStatus();
+    }
+
+    // 9. Copy selected IDs to clipboard
+    function copyIds() {
+      const idsArray = Array.from(clickedPaths);
+      const textToCopy = idsArray.join(', ');
+      
+      navigator.clipboard.writeText(textToCopy)
+        .then(() => {
+          showToast();
+        })
+        .catch(err => {
+          console.error('Could not copy IDs: ', err);
+          alert(`Selected IDs:\n${textToCopy}`);
+        });
+    }
+
+    function showToast() {
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
