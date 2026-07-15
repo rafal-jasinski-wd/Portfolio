@@ -10,7 +10,7 @@ export function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex flex-col items-center md:items-start gap-3">
             <Image
-              src="/creator-logo1.svg"
+              src="/creatorLogo.svg"
               alt="Rafal Jasinski Logo"
               width={150}
               height={50}
@@ -32,7 +32,7 @@ export function Footer() {
               <span className="sr-only">GitHub</span>
             </a>
             <a
-              href="https://linkedin.com"
+              href="https://www.linkedin.com/in/rafal-jasinski-bb22b6120/"
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 rounded-full bg-slate-900 text-slate-400 hover:text-emerald-400 hover:bg-slate-800 transition-all"
@@ -41,7 +41,7 @@ export function Footer() {
               <span className="sr-only">LinkedIn</span>
             </a>
             <a
-              href="mailto:contact@example.com"
+              href="mailto:rafal.jasinski.wd@gmail.com"
               className="p-2 rounded-full bg-slate-900 text-slate-400 hover:text-emerald-400 hover:bg-slate-800 transition-all"
             >
               <Mail className="w-5 h-5" />

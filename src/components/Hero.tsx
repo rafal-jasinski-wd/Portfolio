@@ -78,7 +78,7 @@ export function Hero() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
-            className="relative lg:mr-auto lg:ml-0 w-full max-w-xl lg:max-w-[115%] lg:-ml-12 xl:-ml-20"
+            className="relative mx-auto lg:mr-auto lg:ml-0 w-full max-w-xl lg:max-w-[115%] lg:-ml-12 xl:-ml-20"
           >
             <Image 
               src="/webDeveloper.svg" 
