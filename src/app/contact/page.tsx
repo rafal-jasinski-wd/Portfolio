@@ -16,14 +16,55 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate API call for premium UI feedback
-    setTimeout(() => {
+    setSubmitStatus(null);
+
+    const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
+    if (!accessKey) {
+      console.error("Web3Forms Access Key is missing. Please add NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY to your .env.local file.");
       setIsSubmitting(false);
-      setSubmitStatus('success');
-      setFormData({ name: '', email: '', subject: '', message: '' });
-      setTimeout(() => setSubmitStatus(null), 5000);
-    }, 1500);
+      setSubmitStatus('error');
+      setTimeout(() => setSubmitStatus(null), 6000);
+      return;
+    }
+
+    try {
+      const logoUrl = typeof window !== 'undefined' ? `${window.location.origin}/creatorLogo.png` : '';
+
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          from_name: 'Rafal Jasinski Portfolio',
+          subject: `Portfolio Inquiry: ${formData.subject} (from ${formData.name})`,
+          replyto: formData.email,
+          logo: logoUrl,
+          'Sender Name': formData.name,
+          'Sender Email': formData.email,
+          'Inquiry Subject': formData.subject,
+          'Message Details': formData.message,
+        })
+      });
+
+      const result = await response.json();
+
+      if (response.status === 200 && result.success) {
+        setSubmitStatus('success');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        console.error("Submission error:", result);
+        setSubmitStatus('error');
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+      setTimeout(() => setSubmitStatus(null), 6000);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -73,8 +114,8 @@ export default function ContactPage() {
 
               <div className="space-y-4">
                 {[
-                  { title: 'Email Me Directly', value: 'contact@example.com', icon: Mail, href: 'mailto:contact@example.com' },
-                  { title: 'Based in', value: 'Warsaw, Poland', icon: MapPin },
+                  { title: 'Email Me Directly', value: 'rafal.jasinski.wd@gmail.com', icon: Mail, href: 'mailto:rafal.jasinski.wd@gmail.com' },
+                  { title: 'Based in', value: 'Dublin, Ireland', icon: MapPin },
                 ].map((item, index) => (
                   <motion.div
                     key={item.title}
@@ -125,7 +166,7 @@ export default function ContactPage() {
                   GitHub
                 </a>
                 <a
-                  href="https://linkedin.com"
+                  href="https://www.linkedin.com/in/rafal-jasinski-bb22b6120/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 flex items-center justify-center gap-2 p-3.5 rounded-xl bg-slate-900 text-slate-400 hover:text-emerald-400 border border-slate-800 hover:border-emerald-500/20 transition-all duration-300 font-semibold text-sm"
@@ -225,6 +266,16 @@ export default function ContactPage() {
                     className="p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium rounded-lg text-center"
                   >
                     Thank you! Your message was sent successfully. I will get back to you shortly.
+                  </motion.div>
+                )}
+
+                {submitStatus === 'error' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm font-medium rounded-lg text-center"
+                  >
+                    Oops! Something went wrong. Please check your network or verify your API Access Key.
                   </motion.div>
                 )}
               </form>

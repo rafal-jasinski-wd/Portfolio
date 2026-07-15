@@ -139,6 +139,7 @@ export default function ProjectsPage() {
                       width={600}
                       height={285}
                       className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+                      priority
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent opacity-60 pointer-events-none" />
                   </div>

@@ -97,7 +97,7 @@ export default function ExperiencePage() {
                 <div className="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 sm:p-8 hover:border-emerald-500/20 hover:bg-slate-900/60 transition-all duration-300 shadow-lg">
                   
                   {/* Header info */}
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4 pb-4 border-b border-slate-800/60">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4 pb-4 border-b border-slate-800/60">
                     <div>
                       <h3 className="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">
                         {exp.role}
@@ -112,7 +112,7 @@ export default function ExperiencePage() {
                       </div>
                     </div>
 
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800/50 border border-slate-700/30 text-slate-400 text-xs font-semibold sm:text-sm self-start sm:self-center">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800/50 border border-slate-700/30 text-slate-400 text-xs font-semibold md:text-sm self-start md:self-center">
                       <Calendar className="w-3.5 h-3.5 text-emerald-500/70" />
                       {exp.period}
                     </div>
