@@ -1,9 +1,8 @@
-'use client';
-
-import { motion } from 'framer-motion';
-import { ArrowRight, Download } from 'lucide-react';
+import React from 'react';
+import { ArrowRight } from 'lucide-react';
 import { Github } from './icons/Github';
 import Image from 'next/image';
+import { FadeIn } from './FadeIn';
 
 export function Hero() {
   return (
@@ -17,10 +16,10 @@ export function Hero() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
           
           <div className="max-w-2xl">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
+            <FadeIn
+              direction="up"
+              duration={0.5}
+              delay={0.1}
               className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium mb-6"
             >
               <span className="relative flex h-2 w-2">
@@ -28,31 +27,35 @@ export function Hero() {
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
               Available for new opportunities
-            </motion.div>
+            </FadeIn>
             
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white mb-6"
+            <FadeIn
+              direction="up"
+              duration={0.5}
+              delay={0.2}
+              className="mb-6"
             >
-              Building <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">digital</span> <br />
-              experiences.
-            </motion.h1>
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white">
+                Building <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">digital</span> <br />
+                experiences.
+              </h1>
+            </FadeIn>
             
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="text-lg sm:text-xl text-slate-400 mb-8 max-w-lg leading-relaxed"
+            <FadeIn
+              direction="up"
+              duration={0.5}
+              delay={0.3}
+              className="mb-8 max-w-lg"
             >
-              Hi, I'm Rafal Jasinski. A frontend engineer specializing in React, Next.js, and crafting high-performance, accessible web applications with pixel-perfect precision.
-            </motion.p>
+              <p className="text-lg sm:text-xl text-slate-400 leading-relaxed">
+                Hi, I&apos;m Rafal Jasinski. A frontend engineer specializing in React, Next.js, and crafting high-performance, accessible web applications with pixel-perfect precision.
+              </p>
+            </FadeIn>
             
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
+            <FadeIn 
+              direction="up"
+              duration={0.5}
+              delay={0.4}
               className="flex flex-wrap items-center gap-4"
             >
               <a 
@@ -71,13 +74,13 @@ export function Hero() {
                 <Github className="w-4 h-4" />
                 GitHub
               </a>
-            </motion.div>
+            </FadeIn>
           </div>
 
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
+          <FadeIn 
+            scale={0.9}
+            duration={0.7}
+            delay={0.3}
             className="relative mx-auto lg:mr-auto lg:ml-0 w-full max-w-xl lg:max-w-[115%] lg:-ml-12 xl:-ml-20"
           >
             <Image 
@@ -88,7 +91,7 @@ export function Hero() {
               className="w-full h-auto object-contain drop-shadow-2xl" 
               priority 
             />
-          </motion.div>
+          </FadeIn>
           
         </div>
       </div>

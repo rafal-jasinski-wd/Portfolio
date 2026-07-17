@@ -1,9 +1,8 @@
-'use client';
-
-import { motion } from 'framer-motion';
+import React from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
-import { Code, Cpu, Award, BookOpen, Layers, Terminal } from 'lucide-react';
+import { Code, Cpu, Award, Layers, Terminal } from 'lucide-react';
+import { FadeIn } from '@/components/FadeIn';
 
 const stats = [
   { label: 'Core Projects', value: '3', icon: Cpu, color: 'from-emerald-500 to-teal-500' },
@@ -35,7 +34,7 @@ const skills = [
 ];
 
 // Inline server icon since Lucide Server can sometimes have import naming quirks
-function Server(props: any) {
+function Server(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect width="20" height="8" x="2" y="2" rx="2" ry="2"/><rect width="20" height="8" x="2" y="14" rx="2" ry="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/></svg>
   );
@@ -53,10 +52,9 @@ export default function AboutPage() {
 
       <main className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
         {/* Title Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+        <FadeIn
+          direction="up"
+          duration={0.6}
           className="max-w-3xl mb-16"
         >
           <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white mb-6">
@@ -64,22 +62,22 @@ export default function AboutPage() {
           </h1>
           <div className="h-1 w-20 bg-emerald-500 rounded-full mb-6"></div>
           <p className="text-slate-400 text-lg sm:text-xl leading-relaxed">
-            I'm a dedicated software engineer focused on crafting premium digital experiences. I specialize in high-performance frontend architectures, clean code systems, and pixel-perfect design translation.
+            I&apos;m a dedicated software engineer focused on crafting premium digital experiences. I specialize in high-performance frontend architectures, clean code systems, and pixel-perfect design translation.
           </p>
-        </motion.div>
+        </FadeIn>
 
         <div className="grid lg:grid-cols-12 gap-12 items-start">
           {/* Biography & Metrics */}
           <div className="lg:col-span-7 space-y-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
+            <FadeIn
+              direction="up"
+              duration={0.6}
+              delay={0.1}
               className="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 sm:p-8 space-y-6 leading-relaxed text-slate-300"
             >
               <h2 className="text-2xl font-bold text-white mb-4">My Journey</h2>
               <p>
-                My passion for web development began with a focus on building lightning-fast, highly intuitive user interfaces. Over the years, I've developed a rigorous methodology for performance tuning, responsive styling, and semantic SEO.
+                My passion for web development began with a focus on building lightning-fast, highly intuitive user interfaces. Over the years, I&apos;ve developed a rigorous methodology for performance tuning, responsive styling, and semantic SEO.
               </p>
               <p>
                 Whether integrating Firebase servers for custom split workout engines like **IronPlan**, or architectural BEM layouts for progressive web apps like **JobTrackr Pro**, I bring clean patterns and structured optimization techniques to every codebase.
@@ -87,16 +85,16 @@ export default function AboutPage() {
               <p>
                 I thrive in dynamic spaces where engineering meets design excellence. I hold myself to modern accessibility (a11y) standards, maintaining absolute commitment to crisp layouts, fluent motion, and optimized performance.
               </p>
-            </motion.div>
+            </FadeIn>
 
             {/* Quick Stats Grid */}
             <div className="grid sm:grid-cols-3 gap-6">
               {stats.map((stat, index) => (
-                <motion.div
+                <FadeIn
                   key={stat.label}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 + 0.2 }}
+                  scale={0.95}
+                  duration={0.5}
+                  delay={index * 0.1 + 0.2}
                   className="relative group bg-slate-900/60 border border-slate-800 rounded-xl p-5 text-center flex flex-col justify-center items-center hover:border-emerald-500/30 transition-all duration-300 overflow-hidden"
                 >
                   <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-emerald-500/10 to-transparent blur-md opacity-30 rounded-full pointer-events-none group-hover:scale-150 transition-transform duration-500" />
@@ -104,32 +102,32 @@ export default function AboutPage() {
                   <span className={`text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r ${stat.color} mb-1`}>
                     {stat.value}
                   </span>
-                  <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                     {stat.label}
                   </span>
-                </motion.div>
+                </FadeIn>
               ))}
             </div>
           </div>
 
           {/* Toolbox Grid */}
           <div className="lg:col-span-5 space-y-6">
-            <motion.h2
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-2xl font-bold text-white mb-2 pl-1"
+            <FadeIn
+              startY={10}
+              duration={0.5}
+              delay={0.1}
+              className="pl-1 mb-2"
             >
-              My Toolbox
-            </motion.h2>
+              <h2 className="text-2xl font-bold text-white">My Toolbox</h2>
+            </FadeIn>
 
             <div className="space-y-6">
               {skills.map((category, index) => (
-                <motion.div
+                <FadeIn
                   key={category.category}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 + 0.2 }}
+                  direction="left"
+                  duration={0.5}
+                  delay={index * 0.1 + 0.2}
                   className="bg-slate-900/30 border border-slate-800/60 rounded-xl p-5 hover:border-emerald-500/20 hover:bg-slate-900/50 transition-all duration-300"
                 >
                   <div className="flex items-center gap-3 mb-4">
@@ -149,7 +147,7 @@ export default function AboutPage() {
                       </span>
                     ))}
                   </div>
-                </motion.div>
+                </FadeIn>
               ))}
             </div>
           </div>

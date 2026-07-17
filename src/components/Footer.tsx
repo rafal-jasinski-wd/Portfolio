@@ -50,7 +50,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
+        <div className="mt-8 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-400">
           <p>© {new Date().getFullYear()} Rafal Jasinski. All rights reserved.</p>
           <p>
             Designed & Built with Next.js, Tailwind CSS, and Framer Motion.

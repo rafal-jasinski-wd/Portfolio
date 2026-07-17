@@ -79,7 +79,7 @@ export function Navbar() {
             href="/contact"
             className="hidden md:inline-flex h-9 items-center justify-center rounded-md bg-emerald-500 px-4 py-2 text-sm font-medium text-slate-950 shadow transition-colors hover:bg-emerald-400 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-500"
           >
-            Let's Talk
+            Let&apos;s Talk
           </Link>
 
           {/* Hamburger Menu Button */}
@@ -87,6 +87,8 @@ export function Navbar() {
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-white hover:bg-slate-900 transition-colors focus:outline-none"
             aria-label="Toggle navigation menu"
+            aria-expanded={isOpen}
+            aria-controls="mobile-navigation-menu"
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -101,6 +103,7 @@ export function Navbar() {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            id="mobile-navigation-menu"
             className="md:hidden overflow-hidden bg-slate-950/95 backdrop-blur-lg border-b border-white/10"
           >
             <div className="px-4 pt-2 pb-6 space-y-3 flex flex-col">
@@ -137,7 +140,7 @@ export function Navbar() {
                   onClick={() => setIsOpen(false)}
                   className="flex items-center justify-center h-10 w-full rounded-lg bg-emerald-500 text-slate-950 font-semibold text-sm hover:bg-emerald-400 transition-colors"
                 >
-                  Let's Talk
+                  Let&apos;s Talk
                 </Link>
               </div>
             </div>

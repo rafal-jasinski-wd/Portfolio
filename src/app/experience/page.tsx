@@ -1,9 +1,8 @@
-'use client';
-
-import { motion } from 'framer-motion';
+import React from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Calendar, Code, ChevronRight, BookOpen } from 'lucide-react';
+import { FadeIn } from '@/components/FadeIn';
 
 const experiences = [
   {
@@ -59,10 +58,9 @@ export default function ExperiencePage() {
 
       <main className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
         {/* Title Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+        <FadeIn
+          direction="up"
+          duration={0.6}
           className="max-w-3xl mb-16"
         >
           <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white mb-6">
@@ -72,7 +70,7 @@ export default function ExperiencePage() {
           <p className="text-slate-400 text-lg sm:text-xl leading-relaxed">
             A chronological look at my self-taught coding path, hands-on engineering milestones, and the technical challenges I solved while building my projects.
           </p>
-        </motion.div>
+        </FadeIn>
 
         {/* Timeline Section */}
         <div className="max-w-4xl mx-auto relative pl-6 sm:pl-10">
@@ -82,12 +80,13 @@ export default function ExperiencePage() {
 
           <div className="space-y-12">
             {experiences.map((exp, index) => (
-              <motion.div
+              <FadeIn
                 key={exp.role}
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: '-100px' }}
-                transition={{ duration: 0.7, delay: index * 0.15 }}
+                startX={-30}
+                duration={0.7}
+                delay={index * 0.15}
+                whileInView
+                viewportMargin="-100px"
                 className="relative group"
               >
                 {/* Timeline node */}
@@ -134,7 +133,7 @@ export default function ExperiencePage() {
                   </ul>
 
                 </div>
-              </motion.div>
+              </FadeIn>
             ))}
           </div>
 
